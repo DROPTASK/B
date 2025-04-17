@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Airdrop Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="light-theme">
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-parachute-box"></i>
+                <h1>CryptoDrops</h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="active-section">
+                <h2 class="section-title"><i class="fas fa-chart-line"></i> Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <!-- Summary Cards -->
+                    <div class="card summary-card">
+                        <h3>Total Investment</h3>
+                        <div class="card-value" id="total-investment">$0.00</div>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="investment-change">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card summary-card">
+                        <h3>Total Earnings</h3>
+                        <div class="card-value" id="total-earnings">$0.00</div>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="earnings-change">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card summary-card">
+                        <h3>Active Projects</h3>
+                        <div class="card-value" id="active-projects">0</div>
+                        <div class="card-trend neutral">
+                            <i class="fas fa-minus"></i>
+                            <span>No change</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card summary-card">
+                        <h3>Pending Airdrops</h3>
+                        <div class="card-value" id="pending-airdrops">0</div>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span id="pending-change">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="card activity-card">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list" id="activity-list">
+                        <!-- Activity items will be inserted here by JavaScript -->
+                        <div class="empty-state">
+                            <i class="fas fa-info-circle"></i>
+                            <p>No recent activity to display</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Portfolio Performance -->
+                <div class="card chart-card">
+                    <h3>Portfolio Performance</h3>
+                    <div class="chart-container">
+                        <canvas id="portfolio-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Airdrops -->
+                <div class="card upcoming-card">
+                    <h3>Upcoming Airdrops</h3>
+                    <div class="upcoming-list" id="upcoming-list">
+                        <!-- Upcoming airdrops will be inserted here by JavaScript -->
+                        <div class="empty-state">
+                            <i class="fas fa-info-circle"></i>
+                            <p>No upcoming airdrops to display</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Investment Section -->
+            <section id="investment-section" class="hidden-section">
+                <h2 class="section-title"><i class="fas fa-wallet"></i> Investments & Earnings</h2>
+                
+                <div class="investment-header">
+                    <div class="investment-summary">
+                        <div class="summary-item">
+                            <span>Total Invested:</span>
+                            <strong id="inv-total-invested">$0.00</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Total Earned:</span>
+                            <strong id="inv-total-earned">$0.00</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>ROI:</span>
+                            <strong id="inv-roi">0%</strong>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn" id="add-investment-btn">
+                        <i class="fas fa-plus"></i> Log New Investment
+                    </button>
+                </div>
+                
+                <div class="investment-grid">
+                    <!-- Investment Chart -->
+                    <div class="card chart-card">
+                        <h3>Investment Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="investment-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Earnings Chart -->
+                    <div class="card chart-card">
+                        <h3>Earnings Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="earnings-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Investment History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Investment History</h3>
+                        <div class="search-filter">
+                            <input type="text" id="investment-search" placeholder="Search investments...">
+                            <select id="investment-filter">
+                                <option value="all">All</option>
+                                <option value="investment">Investments</option>
+                                <option value="earning">Earnings</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="investment-history" id="investment-history">
+                        <!-- Investment history will be inserted here by JavaScript -->
+                        <div class="empty-state">
+                            <i class="fas fa-info-circle"></i>
+                            <p>No investment history to display</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Explore Section -->
+            <section id="explore-section" class="hidden-section">
+                <h2 class="section-title"><i class="fas fa-compass"></i> Explore Projects</h2>
+                
+                <div class="explore-header">
+                    <div class="search-filter">
+                        <input type="text" id="project-search" placeholder="Search projects...">
+                        <select id="project-filter">
+                            <option value="all">All Projects</option>
+                            <option value="active">Active</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <button class="btn primary-btn" id="sort-projects-btn">
+                        <i class="fas fa-sort"></i> Sort
+                    </button>
+                </div>
+                
+                <div class="project-grid" id="project-grid">
+                    <!-- Project cards will be inserted here by JavaScript -->
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No projects to display</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Project Details Section -->
+            <section id="project-details-section" class="hidden-section">
+                <div class="back-button" id="back-to-explore">
+                    <i class="fas fa-arrow-left"></i> Back to Explore
+                </div>
+                
+                <div class="project-details-container" id="project-details-container">
+                    <!-- Project details will be inserted here by JavaScript -->
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No project selected</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Stats Section -->
+            <section id="stats-section" class="hidden-section">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Statistics</h2>
+                
+                <div class="stats-grid">
+                    <!-- ROI Over Time -->
+                    <div class="card chart-card">
+                        <h3>ROI Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="roi-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Success Rate -->
+                    <div class="card chart-card">
+                        <h3>Project Success Rate</h3>
+                        <div class="chart-container">
+                            <canvas id="success-rate-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Airdrop Value Distribution -->
+                    <div class="card chart-card">
+                        <h3>Airdrop Value Distribution</h3>
+                        <div class="chart-container">
+                            <canvas id="value-distribution-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Monthly Performance -->
+                    <div class="card chart-card">
+                        <h3>Monthly Performance</h3>
+                        <div class="chart-container">
+                            <canvas id="monthly-performance-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Tasks Section -->
+            <section id="tasks-section" class="hidden-section">
+                <h2 class="section-title"><i class="fas fa-tasks"></i> Task Tracker</h2>
+                
+                <div class="tasks-header">
+                    <div class="tasks-summary">
+                        <div class="summary-item">
+                            <span>Total Tasks:</span>
+                            <strong id="total-tasks">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Completed:</span>
+                            <strong id="completed-tasks">0</strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Completion Rate:</span>
+                            <strong id="task-completion-rate">0%</strong>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn" id="add-task-btn">
+                        <i class="fas fa-plus"></i> Add New Task
+                    </button>
+                </div>
+                
+                <div class="tasks-container">
+                    <!-- Daily Tasks -->
+                    <div class="card">
+                        <h3>Daily Tasks</h3>
+                        <div class="task-list" id="daily-tasks">
+                            <!-- Daily tasks will be inserted here by JavaScript -->
+                            <div class="empty-state">
+                                <i class="fas fa-info-circle"></i>
+                                <p>No daily tasks to display</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Project Tasks -->
+                    <div class="card">
+                        <h3>Project Tasks</h3>
+                        <div class="task-list" id="project-tasks">
+                            <!-- Project tasks will be inserted here by JavaScript -->
+                            <div class="empty-state">
+                                <i class="fas fa-info-circle"></i>
+                                <p>No project tasks to display</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Task Completion History -->
+                <div class="card">
+                    <h3>Task Completion History</h3>
+                    <div class="chart-container">
+                        <canvas id="task-history-chart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- News Section -->
+            <section id="news-section" class="hidden-section">
+                <h2 class="section-title"><i class="fas fa-newspaper"></i> News & Announcements</h2>
+                
+                <div class="news-header">
+                    <div class="search-filter">
+                        <input type="text" id="news-search" placeholder="Search news...">
+                        <select id="news-filter">
+                            <option value="all">All News</option>
+                            <option value="projects">Project Updates</option>
+                            <option value="airdrops">Airdrop Announcements</option>
+                            <option value="market">Market News</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="news-grid" id="news-grid">
+                    <!-- News cards will be inserted here by JavaScript -->
+                    <div class="empty-state">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No news to display</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Navigation Bar -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-section="dashboard-section">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-section="investment-section">
+                <i class="fas fa-wallet"></i>
+                <span>Invest</span>
+            </button>
+            <button class="nav-item" data-section="explore-section">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </button>
+            <button class="nav-item" data-section="stats-section">
+                <i class="fas fa-chart-pie"></i>
+                <span>Stats</span>
+            </button>
+            <button class="nav-item" data-section="tasks-section">
+                <i class="fas fa-tasks"></i>
+                <span>Tasks</span>
+            </button>
+            <button class="nav-item" data-section="news-section">
+                <i class="fas fa-newspaper"></i>
+                <span>News</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add Investment Modal -->
+    <div class="modal" id="add-investment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Log New Transaction</h3>
+                <button class="close-modal" data-modal="add-investment-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="investment-form">
+                    <div class="form-group">
+                        <label for="transaction-type">Transaction Type</label>
+                        <select id="transaction-type" required>
+                            <option value="investment">Investment</option>
+                            <option value="earning">Earning</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="project-select">Project</label>
+                        <select id="project-select" required>
+                            <!-- Project options will be inserted here by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transaction-amount">Amount (USD)</label>
+                        <input type="number" id="transaction-amount" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transaction-date">Date</label>
+                        <input type="date" id="transaction-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transaction-notes">Notes</label>
+                        <textarea id="transaction-notes" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn" data-close-modal="add-investment-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Save Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Task Modal -->
+    <div class="modal" id="add-task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Task</h3>
+                <button class="close-modal" data-modal="add-task-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="task-form">
+                    <div class="form-group">
+                        <label for="task-name">Task Name</label>
+                        <input type="text" id="task-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-type">Task Type</label>
+                        <select id="task-type" required>
+                            <option value="daily">Daily Task</option>
+                            <option value="project">Project Task</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="project-task-form-group" style="display: none;">
+                        <label for="task-project">Related Project</label>
+                        <select id="task-project">
+                            <!-- Project options will be inserted here by JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="task-description">Description</label>
+                        <textarea id="task-description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn secondary-btn" data-close-modal="add-task-modal">Cancel</button>
+                        <button type="submit" class="btn primary-btn">Add Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
